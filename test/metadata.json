@@ -1,0 +1,10 @@
+{
+    "name": "Test",
+    "description" : "Messing around with a gnome extension",
+    "shell-version" : [
+        "3.36"
+    ],
+    "url" : "",
+    "uuid" : "test1@test.com",
+    "version" : 1.0
+}
