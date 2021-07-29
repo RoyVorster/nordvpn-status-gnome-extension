@@ -1,0 +1,12 @@
+.label {
+    font-size: 16px;
+}
+
+.label.enabled {
+    color: green;
+}
+
+.label.disabled {
+    color: red;
+}
+

@@ -1,0 +1,10 @@
+{
+    "name": "NordVPN status indicator",
+    "description" : "NordVPN status indicator",
+    "shell-version" : [
+        "3.36"
+    ],
+    "url" : "",
+    "uuid" : "nordstatus@nordstatus.com",
+    "version" : 1.0
+}
