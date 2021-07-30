@@ -28,7 +28,7 @@ const Indicator = new Lang.Class({
         });
         this.add_child(this.label);
 
-        this.nordstatus = true;
+        this.nordstatus = false;
         this._refresh();
     },
 
@@ -54,11 +54,9 @@ const Indicator = new Lang.Class({
 });
 
 let indicator;
-function init() {
-    indicator = new Indicator();
-}
 
 function enable() {
+    indicator = new Indicator();
     Main.panel.addToStatusArea('indicator', indicator, 0);
 }
 
