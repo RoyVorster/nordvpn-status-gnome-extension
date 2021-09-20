@@ -1,18 +1,15 @@
-const { St, Clutter, GLib } = imports.gi;
+const { St, Clutter, GLib, Gio } = imports.gi;
 const Lang = imports.lang
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 
 const Mainloop = imports.mainloop;
 
-function get_nord_status() {
-    const data = GLib.spawn_command_line_sync('nordvpn status')[1];
-    let data_string = imports.byteArray.toString(data).trim()
-    data_string = data_string.slice(data_string.indexOf("Status:"), data_string.length);
-
-    const status = data_string.split('\n')[0].replace("Status:", "").trim();
-
-    return status === 'Connected';
+function readStream(stream, buffer) {
+    stream.read_line_async(0, null, (stream, res) => {
+        const line = stream.read_line_finish_utf8(res)[0];
+        if (line !== null) { buffer.push(line); readStream(stream, buffer); }
+    });
 }
 
 const Indicator = new Lang.Class({
@@ -37,8 +34,41 @@ const Indicator = new Lang.Class({
         this.label.set_style_class_name(style_class);
     },
 
+    set_status: function(status) { this.nordstatus = status; },
+
     _refresh: function() {
-        this.nordstatus = get_nord_status();
+        let [, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
+            null, ['nordvpn', 'status'], null,
+            GLib.SpawnFlags.DO_NOT_REAP_CHILD | GLib.SpawnFlags.SEARCH_PATH, null);
+
+        GLib.close(stdin);
+        GLib.close(stderr);
+
+        let stdoutStream = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({
+                fd: stdout,
+                close_fd: true,
+            }),
+            close_base_stream: true,
+        });
+
+        let buffer = [];
+        readStream(stdoutStream, buffer);
+
+        GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE, pid, (pid, status) => {
+            if (status === 0) {
+                const data = String(buffer)
+                    .split(',')[0]
+                    .replace("Status:", "")
+                    .trim();
+
+                this.set_status(data.includes("Connected"));
+            }
+
+            GLib.close(stdout);
+            GLib.spawn_close_pid(pid);
+        });
+
         this.update_label();
 
         // Timer stuff
