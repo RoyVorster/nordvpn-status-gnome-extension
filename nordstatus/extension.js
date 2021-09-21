@@ -62,7 +62,10 @@ const Indicator = new Lang.Class({
                     .replace("Status:", "")
                     .trim();
 
-                this.set_status(data.includes("Connected"));
+                const connected = data.includes("Connected");
+                const new_status = data.includes("Disconnected") || connected ? connected : status;
+
+                this.set_status(new_status);
             }
 
             GLib.close(stdout);
