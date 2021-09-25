@@ -2,7 +2,7 @@
     "name": "NordVPN status indicator",
     "description" : "NordVPN status indicator",
     "shell-version" : [
-        "3.36"
+        "40"
     ],
     "url" : "",
     "uuid" : "nordstatus@nordstatus.com",
