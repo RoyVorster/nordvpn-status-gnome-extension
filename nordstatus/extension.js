@@ -34,7 +34,9 @@ const Indicator = new Lang.Class({
         this.label.set_style_class_name(style_class);
     },
 
-    set_status: function(status) { this.nordstatus = status; },
+    set_status: function(status) {
+        this.nordstatus = status;
+    },
 
     _refresh: function() {
         let [, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
@@ -63,7 +65,9 @@ const Indicator = new Lang.Class({
                     .trim();
 
                 const connected = data.includes("Connected");
-                const new_status = data.includes("Disconnected") || connected ? connected : status;
+                const new_status = (data.includes("Disconnected") || connected)
+                    ? connected
+                    : this.nordstatus;
 
                 this.set_status(new_status);
             }
