@@ -1,2 +1,2 @@
 # js-gnome-extensions
-Messing around with clutter and gnome extensions
+Messing around with gnome extensions
