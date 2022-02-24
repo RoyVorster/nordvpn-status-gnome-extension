@@ -1,2 +1,2 @@
-# js-gnome-extensions
-Messing around with gnome extensions
+# Nord VPN status indicator
+Just shows status. Nothing more. Someone wanted the code so here you go.
